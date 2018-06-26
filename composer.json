@@ -15,8 +15,5 @@
         "psr-4": {
             "Dersonsena\\IndicesFinanceiros\\": "src/"
         }
-    },
-    "scripts": {
-        "serve": "php -S localhost:8080 ./index.php"
     }
 }
