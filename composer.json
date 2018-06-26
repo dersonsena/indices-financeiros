@@ -1,0 +1,22 @@
+{
+    "name": "dersonsena/indices_financeiros",
+    "description": "Componente que consulta os indices financeiros",
+    "authors": [
+        {
+            "name": "Kilderson Sena",
+            "email": "dersonsena@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">7",
+        "php-curl-class/php-curl-class": "^8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dersonsena\\IndicesFinanceiros\\": "src/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S localhost:8080 ./index.php"
+    }
+}
