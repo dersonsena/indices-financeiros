@@ -1,5 +1,5 @@
 {
-    "name": "dersonsena/indices_financeiros",
+    "name": "dersonsena/indices-financeiros",
     "description": "Componente que consulta os índices financeiros",
     "keywords": ["indices financeiros", "igpm", "igp", "cotacao"],
     "authors": [
