@@ -1,10 +1,12 @@
 {
     "name": "dersonsena/indices_financeiros",
-    "description": "Componente que consulta os indices financeiros",
+    "description": "Componente que consulta os índices financeiros",
+    "keywords": ["indices financeiros", "igpm", "igp", "cotacao"],
     "authors": [
         {
             "name": "Kilderson Sena",
-            "email": "dersonsena@gmail.com"
+            "email": "dersonsena@gmail.com",
+            "role": "Developer"
         }
     ],
     "require": {
