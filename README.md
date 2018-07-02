@@ -31,7 +31,7 @@ na seção ```require``` do seu arquivo `composer.json`.
 
 ### Exemplos de Uso
 
-```
+```php
 $cotacoesDebit = new DebitService;
 $cotacoesDebit->getIndicesByCurrentMonth(); // Pega as cotações do mês atual de cada índice
 $cotacoesDebit->getCotacoesByIndiceCode(IGPMFGV::getCodigo()); // Pega as cotações por um determindo índice

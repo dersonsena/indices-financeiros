@@ -1,53 +1,29 @@
 <?php
 namespace Dersonsena\IndicesFinanceiros\Services\Debit;
 
-use Curl\Curl;
 use DateTime;
-use Dersonsena\IndicesFinanceiros\Indices\ICVDIEESE;
-use Dersonsena\IndicesFinanceiros\Indices\IGPDIFGV;
-use Dersonsena\IndicesFinanceiros\Indices\IGPMFGV;
 use Dersonsena\IndicesFinanceiros\Indices\IndiceFinanceiroAbstract;
-use Dersonsena\IndicesFinanceiros\Indices\INPCIBGE;
-use Dersonsena\IndicesFinanceiros\Indices\IPCAIBGE;
-use Dersonsena\IndicesFinanceiros\Indices\IPCFIPE;
-use Dersonsena\IndicesFinanceiros\Services\IService;
-use DOMDocument;
-use DOMXPath;
-use ErrorException;
-use Exception;
+use Dersonsena\IndicesFinanceiros\Services\ServiceInterface;
 
-class DebitService implements IService
+class DebitService implements ServiceInterface
 {
-    private $url = 'http://www.debit.com.br/aluguel10.php';
-    private $data = [];
-    private $content = '';
     private $errorCode;
     private $errorMessage = '';
 
-    public function __construct()
+    /**
+     * @var Fetcher
+     */
+    private $fetcher;
+
+    /**
+     * @var Parser
+     */
+    private $parser;
+
+    public function __construct(Fetcher $fetcher, Parser $parser)
     {
-        try {
-            $curl = new Curl;
-            $curl->get($this->url);
-
-            if ($curl->error) {
-                $this->errorCode = $curl->errorCode;
-                $this->errorMessage = $curl->errorMessage;
-                return;
-            }
-
-            $this->content = $curl->response;
-            $this->parse();
-            $curl->close();
-
-        } catch (ErrorException $e) {
-            $this->errorCode = $e->getCode();
-            $this->errorMessage = $e->getMessage();
-
-        } catch (Exception $e) {
-            $this->errorCode = $e->getCode();
-            $this->errorMessage = $e->getMessage();
-        }
+        $this->fetcher = $fetcher;
+        $this->parser = $parser;
     }
 
     public function getProviderName(): string
@@ -68,8 +44,9 @@ class DebitService implements IService
     public function getIndicesByCurrentMonth(): array
     {
         $indices = [];
+        $parsedData = $this->parser->parse($this->fetcher->getContent());
 
-        foreach ($this->data as $code => $listaIndices) {
+        foreach ($parsedData as $code => $listaIndices) {
             $indices[$code] = [];
 
             foreach ($listaIndices as $indice) {
@@ -85,69 +62,29 @@ class DebitService implements IService
 
     public function getCotacoesByIndiceCode(int $indiceCode): array
     {
-        return $this->data[$indiceCode];
+        $parsedData = $this->parser->parse($this->fetcher->getContent());
+
+        $cotacoes = array_filter($parsedData, function ($listaIndices, $code) use ($indiceCode) {
+            return $code == $indiceCode;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        if (!$cotacoes) {
+            return [];
+        }
+
+        return $cotacoes[$indiceCode];
     }
 
-    public function getCurrentCotacaoByIndiceCode(int $indiceCode): IndiceFinanceiroAbstract
+    public function getCurrentCotacaoByIndiceCode(int $indiceCode):? IndiceFinanceiroAbstract
     {
-        foreach ($this->data[$indiceCode] as $indice) {
+        $parsedData = $this->parser->parse($this->fetcher->getContent());
+
+        foreach ($parsedData[$indiceCode] as $indice) {
             if ((new DateTime)->format('m') === $indice->getData()->format('m')) {
                 return $indice;
             }
         }
-    }
 
-    private function parse()
-    {
-        $doc = new DOMDocument;
-        libxml_use_internal_errors(true);
-        $doc->loadHTML($this->content);
-
-        $xpath = new DOMXPath($doc);
-        $tableNodeList = $xpath->query("//table[@class='listagem']/tbody");
-
-        $map = [
-            0 => IGPDIFGV::class,
-            1 => IGPMFGV::class,
-            2 => IPCFIPE::class,
-            3 => IPCAIBGE::class,
-            4 => INPCIBGE::class,
-            5 => ICVDIEESE::class
-        ];
-
-        foreach ($map as $i => $className) {
-            $this->parseIndice($tableNodeList[$i]->childNodes, $className);
-        }
-    }
-
-    private function parseIndice($childNodes, string $className)
-    {
-        foreach ($childNodes as $i => $node) {
-            if ($i === 4) {
-                break;
-            }
-
-            $data = $this->getDateTimeObjFromMonthYearFormat($node->childNodes[1]->textContent);
-            $percentual = str_replace('%', '', $node->childNodes[5]->textContent);
-            $percentual = (float)trim(str_replace(',', '.', $percentual));
-            $indice = (float)trim(str_replace(',', '.', $node->childNodes[3]->textContent));
-
-            /** @var IndiceFinanceiroAbstract $indiceObj */
-            $indiceObj = new $className($data, $percentual, $indice);
-
-            $this->data[$indiceObj::getCodigo()][] = $indiceObj;
-        }
-    }
-
-    private function getDateTimeObjFromMonthYearFormat(string $monthYearString)
-    {
-        $monthList = [
-            'Jan' => '01', 'Fev' => '02', 'Mar' => '03', 'Abr' => '04', 'Mai' => '05', 'Jun' => '06',
-            'Jul' => '07', 'Ago' => '08', 'Set' => '09', 'Out' => '10', 'Nov' => '11', 'Dez' => '12'
-        ];
-
-        list ($month, $year) = explode('/', $monthYearString);
-
-        return new DateTime("{$year}-{$monthList[$month]}-01");
+        return null;
     }
 }
