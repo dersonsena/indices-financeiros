@@ -66,4 +66,4 @@ $cotacoesDebit->getCurrentCotacaoByIndiceCode(IGPMFGV::getCodigo());
 
 ## AGRADECIMENTOS
 
-- Agradeço fortemente ao **Pedro Arthur Duarte (@pedroarthur)** pela ajuda na refatoração e adicionar boas práticas na estrutura do componente.
+- Agradeço fortemente ao **Pedro Arthur Duarte ([@pedroarthur](https://github.com/pedroarthur))** pela ajuda na refatoração e adicionar boas práticas na estrutura do componente.
