@@ -1,6 +1,6 @@
 # Consulta de Índices Financeiros
 
-### Definição
+## Definição
 
 Um simples componente que consulta os índices financeiros do site [Debit](http://www.debit.com.br). Este componente consulta os Índicies:
 
@@ -11,7 +11,7 @@ Um simples componente que consulta os índices financeiros do site [Debit](http:
 - INPC (IBGE);
 - ICV (DIEESE);
 
-### Instalação
+## Instalação
 
 A maneira recomendada para instalar esta extensão é através [composer](http://getcomposer.org/download/).
 
@@ -29,11 +29,41 @@ ou adicione
 
 na seção ```require``` do seu arquivo `composer.json`.
 
-### Exemplos de Uso
+## Exemplos de Uso
+
+### Obter todos as Cotações do Mês atual
+
+O Exemplo abaixo irá retornar todos os índices financeiros do mês corrente:
 
 ```php
-$cotacoesDebit = new DebitService;
-$cotacoesDebit->getIndicesByCurrentMonth(); // Pega as cotações do mês atual de cada índice
-$cotacoesDebit->getCotacoesByIndiceCode(IGPMFGV::getCodigo()); // Pega as cotações por um determindo índice
-$cotacoesDebit->getCurrentCotacaoByIndiceCode(IPCFIPE::getCodigo()); // Pega a cotação do mês atual de um determinado índice
+$debit = DebitService::newDebitService();
+$cotacoesDebit->getIndicesByCurrentMonth();
 ```
+
+### Obter as cotações por um determinando Índice Financeiro
+
+```php
+$debit = DebitService::newDebitService();
+
+// IGP-M (FGV)
+$cotacoesDebit->getCotacoesByIndiceCode(IGPMFGV::getCodigo());
+
+// IPC (FIPE)
+$cotacoesDebit->getCotacoesByIndiceCode(IPCFIPE::getCodigo());
+```
+
+### Obter a cotação atual de um determinado Índice Financeiro
+
+```php
+$debit = DebitService::newDebitService();
+
+// IGP-M (FGV)
+$cotacoesDebit->getCurrentCotacaoByIndiceCode(IGPMFGV::getCodigo());
+
+// IPC (FIPE)
+$cotacoesDebit->getCurrentCotacaoByIndiceCode(IGPMFGV::getCodigo());
+```
+
+## AGRADECIMENTOS
+
+- Agradeço fortemente ao **Pedro Arthur Duarte (@pedroarthur)** pela ajuda na refatoração e adicionar boas práticas na estrutura do componente.
