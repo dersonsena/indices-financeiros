@@ -7,23 +7,35 @@ use Dersonsena\IndicesFinanceiros\Services\ServiceInterface;
 
 class DebitService implements ServiceInterface
 {
+    /**
+     * @var int
+     */
     private $errorCode;
+
+    /**
+     * @var string
+     */
     private $errorMessage = '';
 
     /**
-     * @var Fetcher
+     * @var FetcherInterface
      */
     private $fetcher;
 
     /**
-     * @var Parser
+     * @var ParserInterface
      */
     private $parser;
 
-    public function __construct(Fetcher $fetcher, Parser $parser)
+    public function __construct(FetcherInterface $fetcher, ParserInterface $parser)
     {
         $this->fetcher = $fetcher;
         $this->parser = $parser;
+    }
+
+    public static function newDebitService()
+    {
+        return new DebitService(new HTTPFetcher, new DOMScrapperParser);
     }
 
     public function getProviderName(): string

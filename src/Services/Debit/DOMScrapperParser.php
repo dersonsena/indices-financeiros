@@ -13,9 +13,9 @@ use Dersonsena\IndicesFinanceiros\Indices\IPCFIPE;
 use DOMDocument;
 use DOMXPath;
 
-class Parser
+class DOMScrapperParser implements ParserInterface
 {
-    public function parse(string $content)
+    public function parse(string $content): array
     {
         $doc = new DOMDocument;
         libxml_use_internal_errors(true);

@@ -6,7 +6,7 @@ use Curl\Curl;
 use ErrorException;
 use Exception;
 
-class Fetcher
+class HTTPFetcher implements FetcherInterface
 {
     const URL = 'http://www.debit.com.br/aluguel10.php';
 
