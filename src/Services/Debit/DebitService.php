@@ -87,7 +87,7 @@ class DebitService implements ServiceInterface
         return $cotacoes[$indiceCode];
     }
 
-    public function getCurrentCotacaoByIndiceCode(int $indiceCode):? IndiceFinanceiroAbstract
+    public function getCurrentCotacaoByIndiceCode(int $indiceCode)
     {
         $parsedData = $this->parser->parse($this->fetcher->getContent());
 

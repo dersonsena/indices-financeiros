@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.0",
         "php-curl-class/php-curl-class": "^8.1"
     },
     "autoload": {
